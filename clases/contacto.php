@@ -96,7 +96,7 @@ class Contacto
 		}
 		else		
 		{
-			return $sentencia."<br>"."Error al ejecutar la sentencia".$conexion->errno." :".$conexion->error;
+			return $sentencia."<br>"."Error al ejecutar la sentencia".$conexion->errno." :".$conexion->error." ".$stmt->error;;
 		}
 		
 
