@@ -3,7 +3,6 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Agregar Contacto</title>
-
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
         <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -16,39 +15,30 @@
 
 <link rel="stylesheet" href="validacion/bootstrapValidator.min.css">
 <script src="validacion/bootstrapValidator.min.js"></script>
-<script src="validacion/validar.js"></script>       
-        
+<script src="validacion/validar.js"></script>
 <meta name="viewport" content="widht=device-width,initial-scale=1">
 	</head>
 	<body>
         <div class="container">
 		<h1>Agregar Contacto</h1>
-		
 		<?php
 		include_once('clases/contacto.php');
-		
-		
+
 		if($_POST){
-			
+
 			$nombre=substr($_POST["nombre"],0,100);
             $nombre=filter_var($nombre,FILTER_SANITIZE_STRING);
-			
             $apellido=substr($_POST["apellido"],0,100);
             $apellido=filter_var($apellido,FILTER_SANITIZE_STRING);
-            
 			$direccion=substr($_POST["direccion"],0,150);
             $direccion=filter_var($direccion,FILTER_SANITIZE_STRING);
-
             $telefono=substr($_POST["telefono"],0,15);
             $telefono=filter_var($_POST["telefono"],FILTER_SANITIZE_SPECIAL_CHARS);
-            
 			$email=substr($_POST["email"],0,100);
             $email=filter_var($email,FILTER_SANITIZE_EMAIL);
-            
             $sexo=filter_var($_POST["sexo"],FILTER_SANITIZE_STRING);
-			            
 			if(isset($nombre) && isset($apellido) && isset($telefono) && isset($direccion) && isset($email) && isset($sexo))
-			//if($nombre=!"" && $apellido=!""  && $direccion=!"" && $telefono=!"" && $email=!"" && $sexo=!"")
+
 			{
 				$persona=new Contacto(NULL,$nombre,$apellido,$direccion,$telefono,$email,$sexo);
 				echo $persona->agregar();
@@ -66,7 +56,7 @@
 		?>
 		
 		
-		<FORM NAME="contactos" ACTION="" METHOD="POST" class="form-horizontal" id="contactos">
+		<form name="contactos" action="" method="post" class="form-horizontal" id="contactos">
 		<fieldset>
             <legend>Agrege los valores para el contacto</legend>
             <div class="form-group">
@@ -95,7 +85,7 @@
 			 </div>
 			</div>
             
-            <div class="form-group">			
+            <div class="form-group">
 			<label class="col-md-4 control-label" for="email">Email</label>
 			<div class="col-md-5">
             <input type="email" name="email" class="form-control input-md" id="email">
@@ -118,13 +108,13 @@
                 </div>
             </div>
 			<div class="form-group">
-		  <label class="col-md-4" control-label for="submit"></label>
+		  		<label class="col-md-4" control-label for="btn-send"></label>
                 <div class="col-md-5">
-		          <input type="submit" value="Enviar" class="btn btn-success">
+		          <input type="submit" id="btn-send" value="Enviar" class="btn btn-success">
                 </div>
                 </div>
                 </fieldset>
-		</FORM>
+		</form>
         </br>
 		<label class="col-md-2" control-label for="a"></label>
             <div class="col-md-5">

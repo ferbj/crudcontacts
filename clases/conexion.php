@@ -1,31 +1,32 @@
-<?php   
+<?php
 class Conexion
 {
+    private $host = "localhost";
+    private $user = "root";
+    private $pass = "root";
+    private $db   = "agenda";
+    private $charset = "utf8";
+    private $conexion;
 
- private $host="localhost";
- private $user="root";
- private $pass="root";
- private $db="agenda";
- private $conexion;
- 
- 
- function __construct()
-	 {
-		$this->conexion = mysqli_connect($this->host,$this->user,$this->pass,$this->db);
-		$this->conexion->query("SET NAMES utf8");
-		/* comprobar la conexión */
-			if (mysqli_connect_errno()) {
-				echo "Error de conexión".mysqli_connect_errno()." : ". mysqli_connect_error();
-				echo "<br>";
-			  
-		}
-	
-	 }
-	public function getConexion()
-	{
-		return $this->conexion;
-	}
- 
+    public function __construct()
+    {
+        $dsn = "mysql:host={$this->host};dbname={$this->db};charset={$this->charset}";
 
+        try {
+            $this->conexion = new PDO($dsn, $this->user, $this->pass, [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Lanza excepciones en errores
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,      // Retorna arrays asociativos
+                PDO::ATTR_PERSISTENT         => false,                 // Sin conexión persistente
+            ]);
+        } catch (PDOException $e) {
+            echo "Error de conexión: " . $e->getMessage();
+            exit; // detener ejecución si hay error
+        }
+    }
+
+    public function getConexion()
+    {
+        return $this->conexion;
+    }
 }
 ?>

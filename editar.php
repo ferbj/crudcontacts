@@ -70,18 +70,14 @@
 			{
 				echo "Campos no completados";
 			}
-			
-			
 		}
-		
+
 		$persona=new Contacto($personaId);
 		$elemento=$persona->getContacto();
-		
-		
+
 		?>
-		
-		
-	<FORM NAME="contactos" ACTION="" METHOD="POST" class="form-horizontal">
+
+	<form name="contactos" action="" method="post" class="form-horizontal">
 	   <fieldset>
            <legend>Escriba campos para editar</legend>
             <div class="form-group">
@@ -89,8 +85,7 @@
                 <div class="col-md-5">
                  <input type="text" name="nombre" class="form-control input-md" id="nombre" value="<?php echo $elemento->getNombre()?>">
                 </div>
-            </div>					
-
+            </div>
         <div class="form-group">
          <label class="col-md-4 control-label" for="apellido">Apellido</label>
             <div class="col-md-5">
@@ -98,45 +93,45 @@
 			</div>
            </div>
         
-        <div class="form-group">			
+        <div class="form-group">
 		<label class="col-md-4 control-label" for="direccion">Dirección</label>		
             <div class="col-md-5">
 				<input type="text" name="direccion" class="form-control input-md" id="direccion" value="<?php echo $elemento->getDireccion() ?>">
-        </div>	
+        </div>
            </div>
-           <div class="form-group">			
+           <div class="form-group">
 			<label class="col-md-4 control-label" for="telefono">Teléfono</label>
 			<div class="col-md-5">
             <input type="tel" name="telefono" class="form-control input-md" id="telefono" value="<?php echo $elemento->getTelefono() ?>">
             </div>
         </div>
-           <div class="form-group">			
+           <div class="form-group">
 			<label class="col-md-4 control-label" for="email">Email</label>
 			<div class="col-md-5">
             <input type="email" name="email" class="form-control input-md" id="email" value="<?php echo $elemento->getEmail() ?>">
             </div>
         </div>
 		<div class="form-group">
-           <label class="col-md-4 control-label" for="sexo">Sexo</label>
-          <div class="col-md-5">
+            <label class="col-md-4 control-label" for="sexo">Sexo</label>
+            <div class="col-md-5">
             <div class="radio">
             <label>
-				<input type="radio" name="sexo" value="Masculino" <?php if($elemento->getSexo()=="M"){echo "checked=checked";}?>>Masculino</label>
+				<input type="radio" name="sexo" value="M" <?php if($elemento->getSexo()=="M"){echo "checked=checked";}?>>Masculino</label>
         </div>
         <div class="radio">
 			<label>
-            <input type="radio" name="sexo" value="Femenino"  <?php if($elemento->getSexo()=="F"){echo "checked=checked";}?>>Femenino</label>
-		</div>	
-           </div>
-           </div>
+            <input type="radio" name="sexo" value="F"  <?php if($elemento->getSexo()=="F"){echo "checked=checked";}?>>Femenino</label>
+		</div>
+        </div>
+        </div>
 		<div class="form-group">
-		  <label class="col-md-4" control-label for="submit"></label>
+        <label class="col-md-4" control-label for="submit"></label>
             <div class="col-md-5">
             <input type="submit" class="btn btn-success">
         </div>
         </div>
-           </fieldset>
-		</FORM>
+        </fieldset>
+		</form>
             </br>
         <label class="col-md-2" control-label for="a"></label>
         <div class="col-md-5">

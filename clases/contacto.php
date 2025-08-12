@@ -12,147 +12,132 @@ class Contacto
 	private $telefono;
 	private $email; 
 	private $sexo;
+	private $conexion;
 
-
-	function __construct($personaId=NULL,$nombre=NULL,$apellido=NULL,$telefono=NULL,$direccion=NULL,$email=NULL,$sexo=NULL)
+	function __construct($personaId=null,$nombre=null,$apellido=null,$telefono=null,$direccion=null,$email=null,$sexo=null)
 	{
 		$nuevaConexion=new Conexion();
-		$conexion=$nuevaConexion->getConexion();
+		$this->conexion=$nuevaConexion->getConexion();
 		 //seteo los atributos
-		$this->personaId = $conexion->real_escape_string($personaId);
-		$this->nombre = $conexion->real_escape_string($nombre);
-		$this->apellido = $conexion->real_escape_string($apellido);
-		$this->telefono = $conexion->real_escape_string($telefono);
-		$this->direccion = $conexion->real_escape_string($direccion);
-		$this->email=$conexion->real_escape_string($email);	 
-		$this->sexo = $conexion->real_escape_string($sexo);
+		$this->personaId = $personaId;
+		$this->nombre = $nombre;
+		$this->apellido = $apellido;
+		$this->telefono = $telefono;
+		$this->direccion = $direccion;
+		$this->email= $email;	 
+		$this->sexo = $sexo;
 
 
 	}
 
 	public function agregar()
 	{
+		$sentencia="INSERT INTO contactos(nombre,apellido,direccion,telefono,email,sexo) VALUES (:nombre,:apellido,:direccion,:telefono,:email,:sexo)";
+		$stmt= $this->conexion->prepare($sentencia);
+		$ok = $stmt->execute([
+			':nombre'=>$this->nombre,
+			':apellido'=>$this->apellido,
+			':direccion'=>$this->direccion,
+			':telefono'=>$this->telefono,
+			':email'=>$this->email,
+			':sexo'=>$this->sexo
+		]);
 		
-		$nuevaConexion=new Conexion();
-		$conexion=$nuevaConexion->getConexion();
-
-		/*$sentencia="INSERT INTO contactos (personaId,nombre,apellido,direccion,telefono,email,sexo)
-		VALUES (NULL,'". $this->nombre."','". $this->apellido."','". $this->telefono."','".$this->direccion."','". $this->email."','". $this->sexo."');";
-		*/
-		$sentencia="INSERT INTO contactos(personaId,nombre,apellido,direccion,telefono,email,sexo) VALUES (NULL,?,?,?,?,?,?)";
-		$stmt= $conexion->prepare($sentencia);
-		
-		$stmt->bind_param('ssssss',$this->nombre,$this->apellido,$this->direccion,$this->telefono,$this->email,$this->sexo);
-		//var_dump($stmt);
-		//$stmt->execute();
-		//if ($conexion->query($sentencia)) {
-		
-		if($stmt->execute()){
+		if($ok){
 			header("Location: ver.php");
 		}
 		else
 		{
-			return $sentencia."<br>"."Error al ejecutar la sentencia".$conexion->errno." :".$conexion->error." ".$stmt->error;
+			return $sentencia."<br>"."Error al ejecutar la sentencia".$stmt->errorInfo();
 		}
 		
 	}
 
 	public function editar()
 	{
-		
-		$nuevaConexion=new Conexion();
-		$conexion=$nuevaConexion->getConexion();
 
-		//$sentencia="UPDATE contactos SET nombre = ' $this->nombre', apellido = '$this->apellido', telefono = '$this->telefono', direccion = '$this->direccion',email= '$this->email', sexo = '$this->sexo' WHERE personaId = '$this->personaId'";
-		$sentencia="UPDATE contactos SET nombre = ?, apellido=?, telefono=?,direccion=?,email=?,sexo=? WHERE personaId=?";
-		
-		$stmt = $conexion->prepare($sentencia);
-		
-		$stmt->bind_param('ssssssi',$this->nombre,$this->apellido,$this->telefono,$this->direccion,$this->email,$this->sexo,$this->personaId);
-		//if ($conexion->query($sentencia)) {
-		
-		if($stmt->execute()){
+		$sentencia="UPDATE contactos SET nombre = :nombre, apellido = :apellido, telefono = :telefono,direccion = :direccion , email = :email, sexo = :sexo WHERE personaId = :personaId";
+		$stmt = $this->conexion->prepare($sentencia);
+		$ok = $stmt->execute([
+			':nombre'=>$this->nombre,
+			':apellido'=>$this->apellido,
+			':telefono'=>$this->telefono,
+			':direccion'=>$this->direccion,
+			':email'=>$this->email,
+			':sexo'=>$this->sexo,
+			':personaId'=>$this->personaId
+		]);
+
+		if($ok){
 			header("Location: ver.php");
 		}
 		else
 		{
-			return $sentencia."<br>"."Error al ejecutar la sentencia".$conexion->errno." :".$conexion->error." ".$stmt->error;
+			return $sentencia."<br>"."Error al ejecutar la sentencia".$stmt->errorInfo();
 		}
+
 	}
 
 	public function eliminar()
 	{
-		$nuevaConexion=new Conexion();
-		$conexion=$nuevaConexion->getConexion();
-		
-		//$sentencia="DELETE FROM contactos WHERE personaId=".$this->personaId;
-		$sentencia ="DELETE FROM contactos WHERE personaId=?";
-		$stmt=$conexion->prepare($sentencia);
-		$stmt->bind_param('i',$this->personaId);
-		
-		//if ($conexion->query($sentencia)) {
-		if($stmt->execute()){
+		$sentencia ="DELETE FROM contactos WHERE personaId= :personaId";
+		$stmt=$this->conexion->prepare($sentencia);
+		$ok = $stmt->execute([
+			':personaId'=>$this->personaId
+		]);
+
+		if($ok){
 			header("Location: ver.php");
 		}
-		else		
+		else
 		{
-			return $sentencia."<br>"."Error al ejecutar la sentencia".$conexion->errno." :".$conexion->error." ".$stmt->error;;
+			return $sentencia."<br>"."Error al ejecutar la sentencia".$stmt->errorInfo();
 		}
 		
 
 	}
 
-	public function buscar()
-	{
-		$nuevaConexion=new Conexion();
-		$conexion=$nuevaConexion->getConexion();
-		
-		$sentencia="SELECT * FROM contactos";
-		if($this->nombre!=NULL ||  $this->apellido!=NULL || $this->telefono!=NULL || $this->direccion!=NULL || $this->email!=NULL ||$this->sexo!=NULL )
-		{
-			$sentencia.=" WHERE ";
+	  public function buscar()
+    {
+        $sql = "SELECT * FROM contactos";
+        $params = [];
+        $condiciones = [];
 
+        if ($this->nombre) {
+            $condiciones[] = "nombre LIKE :nombre";
+            $params[':nombre'] = "%{$this->nombre}%";
+        }
+        if ($this->apellido) {
+            $condiciones[] = "apellido LIKE :apellido";
+            $params[':apellido'] = "%{$this->apellido}%";
+        }
+        if ($this->direccion) {
+            $condiciones[] = "direccion LIKE :direccion";
+            $params[':direccion'] = "%{$this->direccion}%";
+        }
+        if ($this->telefono) {
+            $condiciones[] = "telefono LIKE :telefono";
+            $params[':telefono'] = "%{$this->telefono}%";
+        }
+        if ($this->email) {
+            $condiciones[] = "email LIKE :email";
+            $params[':email'] = "%{$this->email}%";
+        }
+        if ($this->sexo) {
+            $condiciones[] = "sexo LIKE :sexo";
+            $params[':sexo'] = "%{$this->sexo}%";
+        }
 
-			if($this->nombre!=NULL)
-			{
-				$sentencia.=" nombre LIKE '%$this->nombre%' && ";
-			}
+        if (!empty($condiciones)) {
+            $sql .= " WHERE " . implode(" AND ", $condiciones);
+        }
 
-			if($this->apellido!=NULL)
-			{
-				$sentencia.=" apellido LIKE '%$this->apellido%' && ";
-			}
+        $sql .= " ORDER BY apellido, nombre";
 
-
-			if($this->direccion!=NULL)
-			{
-				$sentencia.=" direccion LIKE '%$this->direccion%' && ";
-			}
-
-			if($this->telefono!=NULL)
-			{
-				$sentencia.=" telefono LIKE '%$this->telefono%' && ";
-			}
-			if($this->email!=NULL)
-			{
-				$sentencia.=" email LIKE '%$this->email%' && ";
-			}
-
-			if($this->sexo!=NULL)
-			{
-				$sentencia.=" sexo LIKE '%$this->sexo%' && ";
-			}
-
-			$sentencia=substr($sentencia,0,strlen($sentencia)-4);	
-		//echo $sentencia;
-		}
-		
-		$sentencia.="  ORDER BY apellido,nombre";	
-
-
-		return $conexion->query($sentencia);
-
-	}
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute($params);
+        return $stmt; // Devuelve PDOStatement listo para fetch(PDO::FETCH_OBJ)
+    }
 
 	public function getContacto()
 	{
@@ -161,7 +146,7 @@ class Contacto
 		
 		$sentencia="SELECT * FROM contactos WHERE personaId=".$this->personaId;
 		$resultado=$conexion->query($sentencia);
-		$elemento = mysqli_fetch_object($resultado); 
+		$elemento = $resultado->fetch(PDO::FETCH_OBJ);
 		$this->nombre=$elemento->nombre;
 		$this->apellido=$elemento->apellido;
 		$this->telefono=$elemento->telefono;
@@ -194,7 +179,7 @@ class Contacto
 	
 	public function getEmail()
 	{
-		return $this->email;    
+		return $this->email;
 	}
 	
 	public function getSexo()
@@ -202,7 +187,5 @@ class Contacto
 		return $this->sexo;
 	}
 
-
-
 }
-?>
+
