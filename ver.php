@@ -31,7 +31,7 @@
     </head>
     <body>
         <div class="container">
-            <h1>Agenda Contactos</h1>
+            <h1>Agenda de Contactos</h1>
         <?php
 	include_once 'clases/contacto.php';
 	if(($_POST)){

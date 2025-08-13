@@ -38,24 +38,19 @@
             $email=filter_var($email,FILTER_SANITIZE_EMAIL);
             $sexo=filter_var($_POST["sexo"],FILTER_SANITIZE_STRING);
 			if(isset($nombre) && isset($apellido) && isset($telefono) && isset($direccion) && isset($email) && isset($sexo))
-
 			{
 				$persona=new Contacto(NULL,$nombre,$apellido,$direccion,$telefono,$email,$sexo);
 				echo $persona->agregar();
-			
 			}
 			else
 			{
 				echo "Campos no completados";
 			}
-			
-			
+
 		}
-		
-		
+
 		?>
-		
-		
+
 		<form name="contactos" action="" method="post" class="form-horizontal" id="contactos">
 		<fieldset>
             <legend>Agrege los valores para el contacto</legend>
