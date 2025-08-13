@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  web:
+    container_name: webphp
+    image: ferbj81/web-nginx:latest
+    ports:
+      - "80:8080"
+    volumes:
+      - ./html:/app
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: root
+      DB_NAME: agenda
+
+    networks:
+      - backend
+
+  db:
+    container_name: mariadb
+    image: mariadb:11.4
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: agenda
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - backend
+
+volumes:
+  db_data:
+
+networks:
+  backend:
+    driver: bridge
