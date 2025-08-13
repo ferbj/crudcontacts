@@ -9,12 +9,11 @@ class Conexion
     private $conexion;
 
     public function __construct()
-    {
-        $this->host = getenv('DB_HOST') ?: "db";
+    { 
+        $this->host = getenv('DB_HOST') ?: "localhost";
         $this->user = getenv('DB_USER') ?: "root";
         $this->pass = getenv('DB_PASS') ?: "root";
         $this->db   = getenv('DB_NAME') ?: "agenda";
-
         $dsn = "mysql:host={$this->host};dbname={$this->db};charset={$this->charset}";
 
         try {
